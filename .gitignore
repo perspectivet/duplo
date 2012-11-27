@@ -11,6 +11,9 @@ project/plugins/project/
 
 # Scala-IDE specific
 .scala_dependencies
+.cache
+.classpath
+.project
 
 # Emacs backup
 *~
