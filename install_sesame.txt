@@ -1,0 +1,67 @@
+BIGDATA behind SESAME
+tested on Ubuntu
+reference: http://sourceforge.net/apps/mediawiki/bigdata/index.php?title=Using_Bigdata_with_the_OpenRDF_Sesame_HTTP_Server
+
+Install Tomcat 6 (not 7)
+ http://tomcat.apache.org/
+ sudo mv ~/Desktop/apache-tomcat-6.0.36 /opt/.
+ cd /opt/
+ sudo ln -s apache-tomcat-6.0.36 tomcat
+ cd tomcat
+
+Install Sesame & workbench
+ http://sourceforge.net/projects/sesame/files/Sesame%202/
+ move 2 wars from war/ to Tomcat webapp/
+ install archive into SESAME_HOME (ren: ~/dev/bluebrain/rdf)
+
+Start Tomcat
+ java -version
+ check http://localhost:8080/ is free
+ cd /TOMCAT
+ ./bin/startup.sh
+
+Explore Sesame Workbench
+ (http://localhost:8080/openrdf-sesame)
+ http://localhost:8080/openrdf-workbench
+
+
+Compile & Install BigData 
+ cd ~/dev; svn co https://bigdata.svn.sourceforge.net/svnroot/bigdata/branches/BIGDATA_RELEASE_1_2_1/ bigdata_1_2_1
+ edit build.properties:
+  sesame.server.dir = /opt/tomcat/webapps/openrdf-sesame
+  workbench.server.dir = /opt/tomcat/webapps/openrdf-workbench
+  aduna.data.dir = /home/richarde/.aduna/openrdf-sesame-console
+  sesame.dir = /home/richarde/dev/bluebrain/rdf/openrdf-sesame-2.6.10
+ gedit /opt/tomcat/webapps/bigdata/bigdata.properties  <-- BIGDATA_PROPERTIES
+  com.bigdata.journal.AbstractJournal.file=/home/richarde/Data/bigdata/bigdata.jnl <-- create dirs
+  com.bigdata.rdf.sail.allowAutoCommit=true
+ ant install.sesame.server
+ (Start Tomcat to get the Sesame HTTP Server web application running. )
+ create repo
+  cd  SESAME_DIR/bin
+  ./console.sh
+   > connect http://localhost:8080/openrdf-sesame .
+   > create bigdata .
+   > enter, enter, /opt/tomcat/webapps/bigdata/bigdata.properties <-- BIGDATA_PROPERTIES
+ init repo <-- thanks Jeff for figuring this out!
+  > open bigdata
+  > sparql select ?s ?p ?o { ?s ?p ?o }
+
+Browse in Sesame Workbench
+ http://localhost:8080/openrdf-workbench/repositories/bigdata/summary
+ add
+  copy-paste in form (file upload failed somehow)
+
+
+
+
+
+
+org.openrdf.repository.RepositoryException: Failed to upload data: java.util.concurrent.ExecutionException: java.lang.IllegalArgumentException: context bound, but not quads or sids: < TermId(2U), TermId(56U), TermId(71L), TermId(50U) : Explicit >
+	org.openrdf.http.client.HTTPClient.upload(HTTPClient.java:842)
+
+
+
+
+
+ Look for the TRIPLES_MODE, TRIPLES_MODE_WITH_PROVENANCE, and QUADS_MODE on AbstractTripleStore.Options and BigdataSail.Options. 
