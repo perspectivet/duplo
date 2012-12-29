@@ -6,6 +6,8 @@ version := "0.0.1-SNAPSHOT"
 
 scalaVersion := "2.10.0-RC2"
 
+//scalaVersion := "2.10.0-RC3"
+
 resolvers ++= Seq(
 	  "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository",
 	  "repo.codahale.com" at "http://repo.codahale.com",
@@ -18,10 +20,10 @@ resolvers ++= Seq(
 libraryDependencies := Seq(
   "org.specs2" % "specs2_2.10.0-RC2" % "1.12.2",
 //  "org.specs2" %% "specs2" % "1.12.2" % "test",
-  "org.clapper" %% "grizzled-slf4j" % "1.0.1",
+  "org.clapper" % "grizzled-slf4j_2.10" % "1.0.1",
 //  "commons-logging" % "commons-logging-api" % "1.1",
   "org.apache.httpcomponents" % "httpclient" % "4.2.2",
-  "org.w3" %% "banana-sesame" % "x14-SNAPSHOT",
+  "org.w3" % "banana-sesame_2.10" % "x14-SNAPSHOT",
   "org.openrdf.sesame" % "sesame-repository-http" % "2.6.10",
   "org.openrdf.sesame" % "sesame-repository-sparql" % "2.6.10",
   "org.openrdf.sesame" % "sesame-repository-sail" % "2.6.10",

@@ -1,56 +1,81 @@
 package com.github.perspectivet.duplo
 
-import org.openrdf.Sesame
+import java.net.URL
+
+import org.w3.banana.{RDF => BRDF}
+import org.w3.banana.sesame.{Sesame => BSesame}
+import org.w3.banana._
+//import org.w3.banana.SesameUtil.withConnection
+import org.w3.banana.sesame.SesameStore
+import org.w3.banana.sesame.SesameOperations
+
+import org.openrdf.query.QueryLanguage
+import org.openrdf.model._
+import org.openrdf.model.impl.{ GraphImpl, StatementImpl, LiteralImpl }
 import org.openrdf.repository.sail._
 import org.openrdf.repository.RepositoryResult
 import org.openrdf.repository.http.HTTPRepository
 import org.openrdf.repository.manager.RemoteRepositoryManager
-import org.openrdf.model.impl._
-import org.w3.banana.sesame.SesameStore
+import org.openrdf.sail.SailException
+import org.openrdf.query._
+import org.openrdf.query.impl._
+import org.openrdf.sail.memory.MemoryStore
+
+import scala.collection.JavaConversions._
+import scala.concurrent._
 import scala.concurrent._
 import scalax.io._
-import java.net.URL
-import org.openrdf.query.QueryLanguage
+import scalaz.Free
 
-//import com.bigdata.rdf.sail
+import java.util.concurrent.{ ExecutorService, Executors }
 
-object BlockUtil {
-//  val sesameServerURL = new URL()
-  //val manager = new RemoteRepositoryManager("http://localhost:8080/openrdf-sesame/")
+trait BlockBase[Rdf <: BRDF] {
 
-  def test() = {
-    //val repo = new HttpRespository("http://localhost:8080/openrdf-sesame/","bigdata")
+  val sesameServerURL = new URL("http://localhost:8080/openrdf-sesame/")
+
+//  def getGraph(subject: String): Rdf#Graph = {
+  def getGraph(subject: String) = {
 
     try {
-    val repo = new HTTPRepository("http://localhost:8080/openrdf-sesame/","bigdata")
-   repo.initialize
-      //val subject = "<http://bbp.epfl.ch/ontology/provenance/File_1100>"
-    val subject = "?s"
-    val construct = """
-    CONSTRUCT { %s ?p ?o }
-    WHERE { %s ?p ?o }
-    """
-    val query = construct format (subject, subject)
+      val repo = new HTTPRepository(sesameServerURL.toString, "bigdata")
+      repo.initialize
+      val construct = """
+      CONSTRUCT { %s ?p ?o }
+      WHERE { %s ?p ?o }
+      """
+      val query = construct format (subject, subject)
       println("query:" + query)
-    val conn = repo.getConnection()
-    val gq = conn.prepareGraphQuery(QueryLanguage.SPARQL, query)
-    val result = gq.evaluate()
-    val graph = new GraphImpl
-    while (result.hasNext) {
-      val res = result.next()
-      println("result:" + res.toString)
-      graph.add(res)
-    }
+      val conn = repo.getConnection()
+      val gq = conn.prepareGraphQuery(QueryLanguage.SPARQL, query)
+      val result = gq.evaluate()
 
-    result.close
-    conn.close
-    //  service.login("USERNAME", "PASSWORD")
-    //val store = new SesameStore(repo)
-    repo.shutDown()
+      val graph = new GraphImpl
+      while (result.hasNext) {
+	val res = result.next()
+	println("result:" + res.toString)
+	graph.add(res)
+      }
+      
+      result.close
+      conn.close
+      repo.shutDown()
+
+      val g:BSesame#Graph = SesameOperations.makeGraph(SesameOperations.graphToIterable(graph))
+      g
     } catch {
-      case e:Exception => e.printStackTrace()
+      case e:Exception => e.printStackTrace(); throw e
     }
   }
+}
+
+class BlockPrefix[Rdf <: RDF](ops: RDFOps[Rdf]) extends PrefixBuilder("rdfs", "http://www.w3.org/2000/01/rdf-schema#")(ops) {
+  val subClassOf = apply("subClassOf")
+}
+
+class Block[Rdf <: BRDF](val subject: String) extends BlockBase[Rdf] {
+
+  //val graph: Rdf#Graph = getGraph(subject)
+  val graph = getGraph(subject)
 }
 /*
   val foaf = FOAFPrefix(ops)

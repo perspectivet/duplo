@@ -3,21 +3,31 @@ package com.github.perspectivet.duplo
 import org.specs2.mutable._
 
 //import org.openrdf.model.impl.{StatementImpl,URIImpl}
-
 import org.openrdf.rio.RDFFormat
+import org.w3.banana.{RDF => BRDF}
+import org.w3.banana.{Prefix => BPrefix}
+import org.w3.banana.sesame.{Sesame => BSesame}
+import org.w3.banana._
 
 class BlockSpec extends Specification {
   //val foo = BlockUtil.store
+  //import org.w3.banana.diesel._
+  //import org.w3.banana.diesel.ops._
 
-  BlockUtil.test
+  val base = BPrefix[BSesame]("rdfs", "http://www.w3.org/2000/01/rdf-schema#")
+  //val rdf = RDFPrefix[Rdf]
+  val contact = BPrefix[BSesame]("contact", "http://www.w3.org/2000/10/swap/pim/contact#")
 
-    "insert an rdf file" in {
-      /*val rdfFile = "src/test/resources/locations.rdf"
-      val results = rest.putFile(rdfFile,RDFFormat.RDFXML)
-      println("results:" + results)
-       success*/
-      success
-    }
+  "insert an rdf file" in {
+    /*val rdfFile = "src/test/resources/locations.rdf"
+     val results = rest.putFile(rdfFile,RDFFormat.RDFXML)
+     println("results:" + results)
+     success*/
+    val subject = "?s"
+    val b = new Block[BSesame](subject)
+    val subs = b.graph / base.subClassOf
+    success
+  }
 
 /*
  * use for some future test case
