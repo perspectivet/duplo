@@ -37,7 +37,8 @@ Compile & Install BigData
   com.bigdata.rdf.sail.allowAutoCommit=true
  ant install.sesame.server
  (Start Tomcat to get the Sesame HTTP Server web application running. )
- create repo
+create repo
+------------
   cd  SESAME_DIR/bin
   ./console.sh
    > connect http://localhost:8080/openrdf-sesame .

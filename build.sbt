@@ -4,9 +4,7 @@ organization := "com.github.perspectivet"
 
 version := "0.0.1-SNAPSHOT"
 
-scalaVersion := "2.10.0-RC2"
-
-//scalaVersion := "2.10.0-RC3"
+scalaVersion := "2.10.0-RC5"
 
 resolvers ++= Seq(
 	  "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository",
@@ -14,7 +12,11 @@ resolvers ++= Seq(
 	  "bigdata.releases" at "http://www.systap.com/maven/releases",
 	  "bigdata.snapshots" at "http://www.systap.com/maven/snapshots",
 	  "nxparser-repo" at "http://nxparser.googlecode.com/svn/repository",
-	  "openrdf.releases" at "http://repo.aduna-software.org/maven2/releases"
+	  "openrdf.releases" at "http://repo.aduna-software.org/maven2/releases",
+	  "Sonatype OSS Releases" at "http://oss.sonatype.org/content/repositories/releases/",
+	  "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
+    	  "Typesafe Snapshots" at "http://repo.typesafe.com/typesafe/snapshots/",
+    	  "Sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots"
 )
 
 libraryDependencies := Seq(

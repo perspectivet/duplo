@@ -6,26 +6,38 @@ import org.specs2.mutable._
 import org.openrdf.rio.RDFFormat
 import org.w3.banana.{RDF => BRDF}
 import org.w3.banana.{Prefix => BPrefix}
-import org.w3.banana.sesame.{Sesame => BSesame}
 import org.w3.banana._
+import org.w3.banana.sesame._
+import org.w3.banana.sesame.Sesame._
+import org.w3.banana.sesame.SesameOperations._
+import org.openrdf.sail.memory.MemoryStore
+import org.openrdf.repository.Repository
+import org.openrdf.repository.sail.SailRepository
+import scala.util._
+import scala.concurrent._
+import scala.concurrent.util._
 
 class BlockSpec extends Specification {
-  //val foo = BlockUtil.store
+
   //import org.w3.banana.diesel._
   //import org.w3.banana.diesel.ops._
 
-  val base = BPrefix[BSesame]("rdfs", "http://www.w3.org/2000/01/rdf-schema#")
+  val base = BPrefix[Sesame]("rdfs", "http://www.w3.org/2000/01/rdf-schema#")
   //val rdf = RDFPrefix[Rdf]
-  val contact = BPrefix[BSesame]("contact", "http://www.w3.org/2000/10/swap/pim/contact#")
+  val contact = BPrefix[Sesame]("contact", "http://www.w3.org/2000/10/swap/pim/contact#")
 
-  "insert an rdf file" in {
-    /*val rdfFile = "src/test/resources/locations.rdf"
-     val results = rest.putFile(rdfFile,RDFFormat.RDFXML)
-     println("results:" + results)
-     success*/
+  "retrieve a subjects Block" in {
     val subject = "?s"
-    val b = new Block[BSesame](subject)
-    val subs = b.graph / base.subClassOf
+
+    /*val bar: Sesame#Graph = (
+      URI("http://example.com/foo")
+      -- rdf("foo") ->- "foo"
+      -- rdf("bar") ->- "bar"
+    ).graph*/
+
+    val b = new Block[Sesame](subject)
+    //val subs = b.graph.get / base.subClassOf
+    //val 
     success
   }
 
