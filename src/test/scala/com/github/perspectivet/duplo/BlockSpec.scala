@@ -22,24 +22,40 @@ class BlockSpec extends Specification {
   //import org.w3.banana.diesel._
   //import org.w3.banana.diesel.ops._
 
-  val base = BPrefix[Sesame]("rdfs", "http://www.w3.org/2000/01/rdf-schema#")
-  //val rdf = RDFPrefix[Rdf]
-  val contact = BPrefix[Sesame]("contact", "http://www.w3.org/2000/10/swap/pim/contact#")
-
-  "retrieve a subjects Block" in {
-    val subject = "?s"
-
-    /*val bar: Sesame#Graph = (
+  /*val bar: Sesame#Graph = (
       URI("http://example.com/foo")
       -- rdf("foo") ->- "foo"
       -- rdf("bar") ->- "bar"
     ).graph*/
 
+
+  val base = BPrefix[Sesame]("rdfs", "http://www.w3.org/2000/01/rdf-schema#")
+  val contact = BPrefix[Sesame]("contact", "http://www.w3.org/2000/10/swap/pim/contact#")
+
+  "retrieve a subjects Block" in {
+    val subject = "?s"
+
     val b = new Block[Sesame](subject)
-    //val subs = b.graph.get / base.subClassOf
-    //val 
+    println("Block.toString:" + b.mapObj.toString)
     success
   }
+
+  /*
+  "retrieve Blocks by object type" in {
+    val subject = "?s"
+
+    val b = new Block[Sesame](subject)
+    println("Block.toString:" + b.mapObj.toString)
+    success
+  }
+
+  "retrieve a subjects Block" in {
+    val subject = "?s"
+
+    val b = new Block[Sesame](subject)
+    println("Block.toString:" + b.mapObj.toString)
+    success
+  }*/
 
 /*
  * use for some future test case

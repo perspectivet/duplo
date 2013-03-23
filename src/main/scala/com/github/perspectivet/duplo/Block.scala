@@ -30,7 +30,8 @@ import scalaz.Free
 
 import java.util.concurrent.{ ExecutorService, Executors }
 
-trait BlockBase[Rdf <: RDF] {
+//trait BlockBase[Rdf <: RDF] {
+trait BlockBase {
 
   val sesameServerURL = new URL("http://localhost:8080/openrdf-sesame/")
 
@@ -44,16 +45,19 @@ trait BlockBase[Rdf <: RDF] {
 
   val graphStore = GraphStore[Sesame, Future](sesameStore)
 
-  def getGraph(subject: String): Try[Sesame#Graph] = {
+  def getGraph(subject: String): Try[Sesame#Graph] = getGraphWhere("%s ?p ?o" format subject)
+  def getGraph(property: String, value: String): Try[Sesame#Graph] = getGraphWhere("?s %s %s" format (property, value))
 
+  def getGraphWhere(where: String): Try[Sesame#Graph] = {
     try {
       val repo = new HTTPRepository(sesameServerURL.toString, "bigdata")
       repo.initialize
       val construct = """
-      CONSTRUCT { %s ?p ?o }
-      WHERE { %s ?p ?o }
+      CONSTRUCT { ?s ?p ?o }
+      WHERE { %s . ?s ?p ?o }
+      ORDER BY ?s
       """
-      val query = construct format (subject, subject)
+      val query = construct format where
       println("query:" + query)
       val conn = repo.getConnection()
       val gq = conn.prepareGraphQuery(QueryLanguage.SPARQL, query)
@@ -77,23 +81,27 @@ trait BlockBase[Rdf <: RDF] {
       case e: Exception => e.printStackTrace(); throw e
     }
   }
+
+  def graphToBlockMap(graph:Graph) = graph.map(s => (s.getPredicate, s.getObject)).groupBy(_._1.toString).mapValues(_.map(_._2)) 
+  def getBlockMap(subject:String) : Map[String, Iterable[Value]] = graphToBlockMap( getGraph(subject).get )
+  
 }
 
+class Block[Rdf <: RDF](val subject: String) extends BlockBase {
+//class Block[Rdf <: RDF](val subject: String) extends BlockBase[Rdf] {
+
+  val mapObj = getBlockMap(subject) 
+  def apply(property : String) : Iterable[Value] = mapObj.getOrElse(property,Iterable.empty)
+}
 /*
-class BlockPrefix[Rdf <: RDF](ops: RDFOps[Rdf]) extends PrefixBuilder("rdfs", "http://www.w3.org/2000/01/rdf-schema#")(ops) {
-  val subClassOf = apply("subClassOf")
-}
-*/
+object BlockQuery extends BlockBase {
 
-class Block[Rdf <: RDF](val subject: String) extends BlockBase[Rdf] {
+  def getBlocks(property: String, value: String): Seq[Block[Sesame]] = {
+    val graph = getGraph(property,value).get  
+    graph.groupBy(s => s.getSubject).mapValues(graph.getBlockMap)
+  }
+  val graph = 
+  val mapObj = 
+	
+}*/
 
-  val graph: Try[Sesame#Graph] = getGraph(subject)
-}
-/*
-  val foaf = FOAFPrefix(ops)
-
-  val resource = Resource.fromFile("rdf-test-suite/src/main/resources/new-tr.rdf")
-
-  val graph = reader.read(resource, "http://example.com") getOrElse sys.error("ouch")
-
-*/

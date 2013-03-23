@@ -4,7 +4,7 @@ organization := "com.github.perspectivet"
 
 version := "0.0.1-SNAPSHOT"
 
-scalaVersion := "2.10.0-RC5"
+scalaVersion := "2.10.1"
 
 resolvers ++= Seq(
 	  "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository",
@@ -31,7 +31,9 @@ libraryDependencies := Seq(
   "org.openrdf.sesame" % "sesame-repository-sail" % "2.6.10",
   "org.openrdf.sesame" % "sesame-repository" % "2.6.10",
   "org.openrdf.sesame" % "sesame-repository-manager" % "2.6.10",
-  "org.openrdf.sesame" % "sesame-repository-api" % "2.6.10"
+  "org.openrdf.sesame" % "sesame-repository-api" % "2.6.10",
+  "dfki.km.json" % "jsonld-java" % "1.0.0-SNAPSHOT",
+  "dfki.km.json" % "jsonld-java-sesame" % "1.0.0-SNAPSHOT"
 )
 
 initialCommands := "import com.github.perspectivet.bigdata.rest._"
